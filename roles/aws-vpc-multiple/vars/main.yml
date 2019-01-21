@@ -1,0 +1,27 @@
+---
+#VPC
+
+vpc_cidr: 10.0.0.0/16
+vpc_name: "Ansible VPC"
+
+# subnet 
+
+subnet_name1: "Ansible Subnet1"
+subnet_cidr1: 10.0.1.0/24
+subnet_name2: "Ansible Subnet2"
+subnet_cidr2: 10.0.2.0/24
+
+# Internet Gateway Name
+
+igw_name: "Traffic IGW"
+
+securitygroup_name: "Nitesh_Security_Grp"
+
+ec2_tag: "Webserver"
+
+route_name: "Ansible Route"
+
+# The local path to which we would save our EC2 Private key
+
+ec2_key_directory: "/etc/ansible/roles/aws-vpc-multiple/"
+keypair_name: "nitesh"

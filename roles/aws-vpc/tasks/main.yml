@@ -1,0 +1,88 @@
+---
+ - name: 1.Create a new VPC
+   ec2_vpc_net:
+        name: "{{ vpc_name }}"
+        cidr_block: "{{ vpc_cidr }}"
+        state: present
+   register: vpc
+
+ - name: 2.Associate subnet to the VPC
+   ec2_vpc_subnet:
+        state: present
+        vpc_id: "{{ vpc.vpc.id }}"
+        cidr: "{{ subnet_cidr }}"
+        map_public: yes
+        resource_tags:
+                Name: "{{ subnet_name }}"
+   register: subnet
+
+ - name: 3. Create Internet GateWay
+   ec2_vpc_igw:
+        vpc_id: "{{vpc.vpc.id }}"
+        state: present
+        region: us-east-1
+        tags:
+          Name: "{{ igw_name }}"
+   register: igw
+
+ - name: 4. Route IGW
+   ec2_vpc_route_table:
+        vpc_id: "{{ vpc.vpc.id }}"
+        subnets:
+            - "{{ subnet.subnet.id }}"
+        routes:
+            - dest: 0.0.0.0/0
+              gateway_id: "{{ igw.gateway_id }}"
+        tags:
+          Name: "{{ route_name }}"
+
+ - name: 5. Create Security Group
+   ec2_group:
+        name: Nitesh_Security_Grp
+        description: Testing Nitesh Securty Group
+        vpc_id: "{{ vpc.vpc.id }}"
+        rules:
+          - proto: tcp
+            ports: 80
+            cidr_ip: 0.0.0.0/0
+        
+          - proto: tcp
+            ports: 22
+            cidr_ip: 0.0.0.0/0
+   register: security_group
+
+ - name: 6. Create a new ec2 key pair
+   ec2_key: 
+        name: ec2_keypair
+   register: keypair
+
+ - name: copy EC2 Private key locally so it can be later on used to SSH into the instance
+   copy: content= "{{ keypair.key.private_key }}" dest= "{{ ec2_key_directory }}key.ppk"
+   when: keypair.changed == true
+
+ - name: 7. Create EC2 server
+   ec2: 
+        image: ami-14c5486b
+        wait: true
+        instance_type: t2.micro
+        group_id: "{{ security_group.group_id }}"
+        vpc_subnet_id: "{{ subnet.subnet.id }}"
+        key_name: "{{ keypair.key.name }}"
+        count: 1
+        region: us-east-1
+   register: ec2
+
+ - name: 8. Wait for SSH to come up
+   local_action: wait_for
+                 host={{ item.public_ip }}
+                 port=22
+                 state=started
+   with_items: "{{ ec2.instances }}"
+
+
+
+
+
+
+
+

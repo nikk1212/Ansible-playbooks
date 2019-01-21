@@ -1,0 +1,13 @@
+---
+- name: Create Admin user
+  user:
+    name: user1
+    password: "{{ admin_password }}"
+    groups: root
+    shell: /bin/bash
+
+- name: add admin into sudoers
+  lineinfile: path=//etc/sudoers line='user1  ALL=(ALL)  ALL'
+
+- name: Add new Group
+  group: name=group1 state=present
