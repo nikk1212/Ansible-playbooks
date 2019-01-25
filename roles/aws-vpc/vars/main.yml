@@ -14,13 +14,10 @@ subnet_cidr: 10.0.0.0/24
 
 igw_name: "Traffic IGW"
 
-securitygroup_name: "Nitesh_Security_Grp"
+securitygroup_name: "Ansiblegroup"
 
 ec2_tag: "Webserver"
 
 route_name: "Ansible Route"
 
-# The local path to which we would save our EC2 Private key
-
-ec2_key_directory: "/etc/ansible/roles/aws-vpc/"
-keypair_name: "nitesh"
+key_name: "ansibleLearn"

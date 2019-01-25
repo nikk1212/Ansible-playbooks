@@ -1,12 +1,12 @@
 ---
- - name: 1.Create a new VPC
+ - name: 1. Create a new VPC
    ec2_vpc_net:
         name: "{{ vpc_name }}"
         cidr_block: "{{ vpc_cidr }}"
         state: present
    register: vpc
 
- - name: 2.Associate subnet to the VPC
+ - name: 2. Associate subnet to the VPC
    ec2_vpc_subnet:
         state: present
         vpc_id: "{{ vpc.vpc.id }}"
@@ -36,6 +36,21 @@
         tags:
           Name: "{{ route_name }}"
 
+ - name: Create an EC2 key
+   ec2_key:
+     name: ansiblelearn.nitesh
+   register: ec2_key
+
+ - name: Save private key
+   copy:
+     content: "{{ ec2_key.key.private_key }}"
+     dest: "/etc/ansible/keys_ansible.pem"
+     mode: 0600
+   when: ec2_key.changed
+
+ - debug:
+     var: ec2_key
+
  - name: 5. Create Security Group
    ec2_group:
         name: Nitesh_Security_Grp
@@ -51,28 +66,22 @@
             cidr_ip: 0.0.0.0/0
    register: security_group
 
- - name: 6. Create a new ec2 key pair
-   ec2_key: 
-        name: ec2_keypair
-   register: keypair
-
- - name: copy EC2 Private key locally so it can be later on used to SSH into the instance
-   copy: content= "{{ keypair.key.private_key }}" dest= "{{ ec2_key_directory }}key.ppk"
-   when: keypair.changed == true
-
- - name: 7. Create EC2 server
+ - name: 6. Create EC2 server
    ec2: 
         image: ami-14c5486b
         wait: true
         instance_type: t2.micro
         group_id: "{{ security_group.group_id }}"
         vpc_subnet_id: "{{ subnet.subnet.id }}"
-        key_name: "{{ keypair.key.name }}"
+        key_name: "{{ ec2_key.key.name }}"
         count: 1
         region: us-east-1
+        instance_tags:
+                 name: Nitesh
+                 owner: Nikk1212
    register: ec2
 
- - name: 8. Wait for SSH to come up
+ - name: 7. Wait for SSH to come up
    local_action: wait_for
                  host={{ item.public_ip }}
                  port=22

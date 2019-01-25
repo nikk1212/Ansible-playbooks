@@ -1,0 +1,35 @@
+---
+- hosts: localhost
+  tasks:
+   - elb_target_group:
+       name: test-target-group
+       protocol: http
+       port: 80
+       vpc_id: vpc-000f0525bf3f91e36
+       state: present
+
+   - elb_application_lb:
+          name: test-alb
+          subnets:
+            - subnet-02ae2ade19a07a9aa
+            - subnet-0ab6d37cd7ad43fb3
+          security_groups:
+            - sg-08e8cb024e338bdc8
+          scheme: internal
+          listeners:
+            - Protocol: HTTP
+              Port: 80
+              DefaultActions:
+                - Type: forward
+                  TargetGroupName: test-target-group
+              Rules:
+                - Conditions:
+                    - Field: path-pattern
+                      Values:
+                        - '/test'
+                  Priority: '1'
+                  Actions:
+                    - TargetGroupName: test-target-group
+                      Type: forward
+          state: present
+          validate_certs: false

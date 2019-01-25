@@ -1,12 +1,12 @@
 ---
- - name: 1.Create a new VPC
+ - name: 1. Create a new VPC
    ec2_vpc_net:
         name: "{{ vpc_name }}"
         cidr_block: "{{ vpc_cidr }}"
         state: present
    register: vpc
 
- - name: 2.a.Associate subnet1 to the VPC
+ - name: 2. a.Associate subnet1 to the VPC
    ec2_vpc_subnet:
         state: present
         vpc_id: "{{ vpc.vpc.id }}"
@@ -16,7 +16,7 @@
                 Name: "{{ subnet_name1 }}"
    register: subnet1
 
- - name: 2.b.Associate subnet2 to the VPC
+ - name: 2. b.Associate subnet2 to the VPC
    ec2_vpc_subnet:
         state: present
         vpc_id: "{{ vpc.vpc.id }}"
@@ -25,6 +25,17 @@
         resource_tags:
                 Name: "{{ subnet_name2 }}"
    register: subnet2
+
+ - name: 2. b.Associate subnet3 to the VPC
+   ec2_vpc_subnet:
+        state: present
+        vpc_id: "{{ vpc.vpc.id }}"
+        cidr: "{{ subnet_cidr3 }}"
+        map_public: yes
+        resource_tags:
+                Name: "{{ subnet_name3 }}"
+   register: subnet3
+
 
  - name: 3. Create Internet GateWay
    ec2_vpc_igw:
@@ -48,9 +59,10 @@
 
  - name: 5. Create Security Group
    ec2_group:
-        name: Nitesh_Security_Grp
+        name: "{{ security_group }}"
         description: Testing Nitesh Security Group
         vpc_id: "{{ vpc.vpc.id }}"
+        validate_certs: false
         rules:
           - proto: tcp
             ports: 80
@@ -61,27 +73,30 @@
             cidr_ip: 0.0.0.0/0
    register: security_group
 
- - name: 6. Create a new ec2 key pair
+ - name: 6. Create an EC2 key
    ec2_key:
-        name: "{{ keypair_name }}"
-   register: keypair
+       name: ansiblelearn.nitesh
+   register: ec2_key
 
- - name: save private key
-   copy: content= "{{ keypair.key.private_key }}" dest= "./aws-private.pem" mode=0600
-   when: keypair.changed
-
- - name: 7. Create EC2 server
+ - name: 7. Save private key
+   copy:
+       content: "{{ ec2_key.key.private_key }}"
+       dest: "/etc/ansible/keys_ansible.pem"
+       mode: 0600
+   when: ec2_key.changed
+  
+ - name: 8. Create EC2 server
    ec2:
         image: ami-14c5486b
         wait: true
         instance_type: t2.micro
         group_id: "{{ security_group.group_id }}"
         vpc_subnet_id: "{{ item }}"
-        key_name: "{{ keypair.key.name }}"
+        key_name: "{{ ec2_key.key.name }}"
         count: 1
         region: us-east-1
    with_items: 
         - "{{ subnet1.subnet.id }}"
-        - "{{ subnet2.subnet.id }}"
    register: ec2
-
+   tags:
+        - ec2

@@ -1,0 +1,13 @@
+--- 
+- hosts: localhost
+  tasks:
+    - rds:
+        command: delete
+        instance_name: ansible-database
+        snapshot: ansible-database-snapshot
+        validate_certs: no
+        region: us-east-1
+      register: rds
+
+    - debug: 
+        var: rds

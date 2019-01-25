@@ -1,0 +1,23 @@
+---
+- hosts: localhost
+  tasks:
+    - rds:
+        command: create
+        instance_name: Ansible-database
+        db_engine: MySQL
+        size: 10
+        region: us-east-1
+        validate_certs: no
+        multi_zone: yes
+        vpc_security_groups: sg-08d469405ada2ee50
+        subnet: ansible subnet group
+        instance_type: db.t2.micro
+        username: nikk1212
+        password: Nikk12*#
+        tags:
+          Environment: testing
+          Application: cms 
+      register: rds
+    
+    - debug:
+        var: rds 

@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  tasks: 
+    - rds_subnet_group:
+        state: present
+        name: ansible subnet group
+        description: Ansible Learning subnet Group
+        region: us-east-1
+        subnets:
+                - subnet-00d9d457e89154d13
+                - subnet-088fc9527bbb43ee5
+                - subnet-0f260d8b2149b8cb2
+                - subnet-03dcb2d24405d5466
+
