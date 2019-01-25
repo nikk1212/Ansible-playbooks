@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  tasks:
+    - name:
+      iam:
+        iam_type: user
+        name: nitesh
+        state: update
+        groups: nitesh
+      register: userGroup
+        
+    - debug:
+        var: userGroup
+      

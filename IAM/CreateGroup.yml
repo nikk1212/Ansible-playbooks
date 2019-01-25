@@ -1,0 +1,15 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Create Two Groups at one time 
+      iam:
+           iam_type: group
+           name: "{{ item }}"
+           state: present
+      with_items:
+          - nitesh
+          - itlearn360
+      register: new_groups
+
+    - debug:
+            var: new_groups

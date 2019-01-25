@@ -1,0 +1,17 @@
+---
+ - hosts: localhost
+   vars:
+     igw_name: Ansible Gateway
+     vpc_id: vpc-0487889f2ed67a830
+   tasks:
+        - name: Create Internet GateWay
+          ec2_vpc_igw:
+            vpc_id: "{{ vpc_id }}"
+            state: present
+            region: us-east-1
+            tags:
+               Name: "{{ igw_name }}"
+          register: igw
+       
+        - debug:
+            var: igw              

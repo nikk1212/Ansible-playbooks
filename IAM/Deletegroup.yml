@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  tasks:
+      - name: Delete IAM user
+        iam:
+           iam_type: group
+           name: Group1
+           state: absent
+

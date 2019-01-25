@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Assign a policy called Admin to the administrators group
+      iam_policy:
+          iam_type: group
+          iam_name: nitesh
+          policy_name: Admin
+          state: present
+          policy_document: admin_policy.json
+      register: policy
+        
+    - debug:
+        var: policy

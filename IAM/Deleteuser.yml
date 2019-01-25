@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  tasks:
+      - name: Delete IAM user 
+        iam:
+           iam_type: user
+           name: nitesh
+           state: absent
