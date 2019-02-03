@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  tasks: 
+    - rds:
+        command: replicate
+        instance_name: replica-ansible-database
+        source_instance: ansible-database
+        region: us-east-1
+      register: rds
+      
+    - debug:
+         var: rds  

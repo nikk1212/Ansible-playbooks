@@ -1,0 +1,7 @@
+---
+- hosts: localhost
+  tasks: 
+        - openssl_csr:
+            path: /etc/ssl/www.ansible.com.csr
+            privatekey_path: /etc/ssl/ansible.com.pem
+            common_name: www.ansible.com

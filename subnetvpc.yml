@@ -1,0 +1,19 @@
+---
+ - hosts: localhost
+   vars:
+     subnet_name: "Ansible Subnet"
+     subnet_cidr: 10.0.0.0/24
+     vpc_id: vpc-0b55dcd6a24619427
+   tasks:
+       - name: Associate subnet to the VPC
+         ec2_vpc_subnet:
+            state: present
+            vpc_id: "{{ vpc_id }}"
+            cidr: "{{ subnet_cidr }}"
+            map_public: yes
+            resource_tags:
+                   Name: "{{ subnet_name }}"
+         register: subnet
+       
+       - debug:
+           var: subnet

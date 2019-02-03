@@ -1,0 +1,16 @@
+---
+- hosts: localhost
+  tasks: 
+    - rds_subnet_group:
+        state: present
+        name: ansible subnet group
+        description: Ansible Learning subnet Group with ITLearn 360
+        region: us-east-1
+        subnets:
+                - subnet-0e15fd8624e60a0e3
+                - subnet-04604af7a0e5a5785
+                - subnet-00546b8a0f3f0dc8a
+      register: rds_group
+
+    - debug:
+        var: rds_group

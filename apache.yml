@@ -1,0 +1,14 @@
+---
+- hosts: dbgroup
+  user: ec2-user
+  become: yes
+  become_method: sudo
+  tasks:
+  - name: 1. Install Latest version HTTP/Apache RPMs
+    yum: name=httpd state=present
+  - name: 2. Start httpd service
+    service: name=httpd state=started enabled=yes
+  - name: 3. Add apache iptable rule
+    command: /sbin/iptables -I INPUT 1 -p tcp --dport http -j ACCEPT -m comment --comment "Apache on port 80"
+  - name: 4. Save iptable rule
+    command: iptables-save

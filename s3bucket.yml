@@ -1,0 +1,75 @@
+---
+- hosts: localhost
+  tasks:
+      - name: 1. Creating s3Bucket
+        s3_bucket:
+            name: ansible-nitesh
+            validate_certs: false
+        tags: 
+           - createbucket
+
+      - name: 2. Simple PUT operation
+        aws_s3:
+           bucket: ansible-nitesh
+           object: index.html
+           src: /etc/ansible/s3bucket/index.html
+           mode: put
+           encrypt: yes
+           validate_certs: false
+           permission: public-read-write
+        tags:
+          - putfile
+
+      - name: 3. Give public read permission
+        aws_s3:
+           bucket: ansible-nitesh
+           mode: geturl
+           permission: public-read
+           object: index.html
+           validate_certs: false
+        register: geturl
+        tags:
+           - geturl
+        
+      - debug:
+            var: geturl
+
+      - name: 4. Delete a bucket and all contents
+        aws_s3:
+          bucket: "{{ item }}"
+          mode: delete
+          validate_certs: false
+        with_items:
+          - ansiblebucket1234567890
+          - ansible-nitesh
+        tags:
+          - deletebucket
+
+      - name: 5. Simple GET operation
+        aws_s3:
+          bucket: ansible-nitesh
+          object: index.html
+          dest: /etc/ansible/s3bucket/obtain_index.html
+          mode: get
+          permission: public-read
+          validate_certs: false
+        tags:
+          - getfile
+
+      - name: 6. Provide versioning and requester pays
+        s3_bucket:
+           name: ansible-nitesh
+           requester_pays: no
+           versioning: yes
+           validate_certs: false
+        tags:
+          - versioning
+
+      - name: 7. Give the permission for static web hosting
+        s3_website:
+            name: ansible-nitesh
+            state: present
+            validate_certs: false
+        tags:
+          - static_host
+

@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  tasks: 
+    - ec2_ami:
+        instance_id: i-0661fa8b45a7531a7
+        wait: yes
+        name: ansible
+        tags:
+          Name: ansible
+          Service: TestService
+      register: ami
+
+    - debug:
+        var: ami

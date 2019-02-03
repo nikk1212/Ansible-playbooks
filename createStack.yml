@@ -1,0 +1,19 @@
+---
+- hosts: localhost
+  tasks:
+    - name: create a cloudformation stack
+      cloudformation:
+        stack_name: "ansible-cloudformation"
+        state: "present"
+        region: "us-east-1"
+        disable_rollback: true
+        validate_certs: false
+        template: "cloudformation.json"
+        template_parameters:
+          KeyName: "ansiblelearn.nitesh"
+          DiskType: "ephemeral"
+          ClusterSize: 3
+          InstanceType: "t2.micro"
+        tags:
+          Stack: "ansible-cloudformation"
+      register: cloudformation

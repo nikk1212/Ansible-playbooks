@@ -1,0 +1,15 @@
+--- 
+- hosts: localhost
+  tasks:
+    - rds:
+        command: delete
+        instance_name: "{{ item }}"
+        validate_certs: no
+        region: us-east-1
+      register: rds
+      with_items:
+                - ansible-database
+                - replica-ansible-database
+
+    - debug: 
+        var: rds

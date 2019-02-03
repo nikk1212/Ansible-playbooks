@@ -1,0 +1,36 @@
+<html>
+<head>
+	<title>Animation</title>
+	<script type="text/javascript" src="jquery.min.js"></script>
+	<style type="text/css">
+		
+		#circle
+		{
+			height: 100px;
+			width: 100px;
+			border-radius: 50%;
+			background-color: green;
+		}
+
+
+
+	</style>
+</head>
+<body>
+	<div id="circle"></div>
+	<script type="text/javascript">
+		$("#circle").click(function()
+		{
+			$("#circle").animate({width:"200px",height:"200px",backgroundColor:"red",marginLeft:"100px",marginTop:"100px"},2000);
+		});
+
+		$.get("info.txt",function(data)
+		{
+			alert(data);
+		});
+	</script>
+
+
+</body>
+</html>
+

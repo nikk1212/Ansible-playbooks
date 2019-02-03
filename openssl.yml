@@ -1,0 +1,5 @@
+---
+- hosts: localhost
+  tasks:
+        - openssl_privatekey:
+            path: /etc/ssl/ansible.com.pem

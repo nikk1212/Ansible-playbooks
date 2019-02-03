@@ -2,19 +2,28 @@
 - hosts: localhost
   tasks:
    - elb_target_group:
-       name: test-target-group
-       protocol: http
-       port: 80
-       vpc_id: vpc-000f0525bf3f91e36
-       state: present
+        name: test-target-group
+        protocol: http
+        port: 80
+        vpc_id: vpc-088645e19d58f4554
+        health_check_path: /
+        successful_response_codes: "200,250-260"
+        targets:
+          - Id: i-0b44bb8610fea0b2c
+            Port: 80
+          - Id: i-0973e24f003c454de
+            Port: 80
+        state: present
+        wait_timeout: 200
+        wait: True 
 
    - elb_application_lb:
-          name: test-alb
+          name: itlearn360-alb
           subnets:
-            - subnet-02ae2ade19a07a9aa
-            - subnet-0ab6d37cd7ad43fb3
+            - subnet-0e15fd8624e60a0e3
+            - subnet-04604af7a0e5a5785
           security_groups:
-            - sg-08e8cb024e338bdc8
+            - sg-07b0b598f8f0d1cb8
           scheme: internal
           listeners:
             - Protocol: HTTP

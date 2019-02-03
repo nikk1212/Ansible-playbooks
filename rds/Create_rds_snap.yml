@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  tasks:
+    - rds:
+        command: snapshot
+        instance_name: ansible-database
+        snapshot: ansible-database-snapshot
+        region: us-east-1
+      register: rds
+      
+    - debug:
+         var: rds 

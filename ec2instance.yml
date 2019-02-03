@@ -4,8 +4,9 @@
 
         - name: Setting up Security/Firewall Group
           ec2_group:
-                name: Nitesh_AWS_Security_Grp
+                name: ansiblegroup
                 description: Rules to allow port 22 and 80 
+                validate_certs: false
                 rules:
                   - proto: tcp
                     from_port: 80
@@ -16,27 +17,57 @@
                     from_port: 22
                     to_port: 22
                     cidr_ip: 0.0.0.0/0
+
                 rules_egress:
                    - proto: all
                      cidr_ip: 0.0.0.0/0
 
         - name: Provision a EC2 Instance
           ec2:
-                key_name: nitesh
+                key_name: ansiblelearn.nitesh
                 instance_type: t2.micro
                 region: us-east-1
-                image: "{{ image }}"
+                image: ami-14c5486b
                 wait: true
                 wait_timeout: 500
                 count: 1
+                validate_certs: false
                 instance_tags:
                         Name: nitesh
                         Owner: nikk1212
                 monitoring: no
-                vpc_subnet_id: "{{ subnet_id }}"
+                vpc_subnet_id: "{{ item }}"
                 assign_public_ip: yes
-                group: Nitesh_AWS_Security_Grp
+                group: nitesh_sec_grp
+          with_items:
+                - subnet-0e15fd8624e60a0e3
+                - subnet-04604af7a0e5a5785
           register: ec2_out
+          tags:
+               - ec2
+        
+        - name: Provision a EC2 Instance
+          ec2:
+                key_name: ansiblelearn.nitesh
+                instance_type: t2.micro
+                region: us-east-1
+                image: ami-14c5486b
+                wait: true
+                wait_timeout: 500
+                count: 1
+                validate_certs: false
+                instance_tags:
+                        Name: nitesh
+                        Owner: nikk1212
+                monitoring: no
+                vpc_subnet_id: "{{ item }}"
+                assign_public_ip: yes
+                group: nitesh_sec_grp
+          with_items:
+                - subnet-0abf8149b93a1dbc3
+          register: ec2_out
+          tags:
+                - ec2a
 
         - name: Wait for SSH to come up
           wait_for: host={{ item.public_dns_name }} port=22 delay=60 timeout=320 state=started

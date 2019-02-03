@@ -1,0 +1,19 @@
+---
+- hosts: localhost
+  tasks:
+      - name: 1. Creating s3Bucket
+        s3_bucket:
+            name: ansible-nitesh
+            validate_certs: false
+        tags: 
+           - createbucket
+
+      - name: 8. Enable logging of s3 bucket ansible.nitesh
+        s3_logging:
+           name: ansible-nitesh
+           target_bucket: ansible-nitesh
+           target_prefix: logs/ansible-nitesh
+           state: present
+           validate_certs: false
+        tags:
+          - logging

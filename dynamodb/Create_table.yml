@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  tasks:
+        - name: Create dynamodb table with hash and range primary keys
+          dynamodb_table:
+            name: ansible-table
+            region: us-east-1
+            validate_certs: no
+            hash_key_name: id
+            hash_key_type: STRING   

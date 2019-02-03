@@ -1,0 +1,18 @@
+---
+- hosts: localhost 
+  tasks: 
+
+      - name: Create an EC2 key
+        ec2_key:
+          name: ansiblelearn.nitesh
+        register: ec2_key
+
+      - name: Save private key
+        copy:
+          content: "{{ ec2_key.key.private_key }}" 
+          dest: "/etc/ansible/keys_ansible.pem" 
+          mode: 0600 
+        when: ec2_key.changed 
+
+      - debug:
+           var: ec2_key

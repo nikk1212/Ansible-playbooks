@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  tasks: 
+    - ec2_ami:
+        instance_id: i-0b44bb8610fea0b2c
+        wait: yes
+        name: itlearn360
+        tags:
+          Name: ansible
+          Service: TestService
+      register: ami
+
+    - debug:
+        var: ami

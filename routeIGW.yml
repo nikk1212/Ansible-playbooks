@@ -1,0 +1,18 @@
+---
+ - hosts: localhost
+   vars:
+     route_name: Ansible Route
+     vpc_id: vpc-0b55dcd6a24619427
+     subnet_id: subnet-0ef0440d45c632bc0
+     igw_gateway: igw-03f69b4dbbc78a066
+   tasks:
+         - name: Route IGW
+           ec2_vpc_route_table:
+                 vpc_id: "{{ vpc_id }}"
+                 subnets:
+                     - "{{ subnet_id }}"
+                 routes:
+                     - dest: 0.0.0.0/0
+                       gateway_id: "{{ igw_gateway }}"
+                 tags:
+                    Name: "{{ route_name }}"              

@@ -1,0 +1,8 @@
+---
+- hosts: all
+  user: ec2-user
+  become: yes
+  become_method: sudo
+  tasks:
+    - user: name=ansibleuser password=abcd groups=root shell=/bin/bash
+

@@ -1,0 +1,29 @@
+---
+- hosts: localhost
+  tasks: 
+        - name: create launch config
+          ec2_lc:
+            name: ansible_launch_config
+            image_id: ami-035be7bafff33b6b6
+            key_name: ansiblelearn.nitesh
+            region: us-east-1
+            security_groups: sg-07b0b598f8f0d1cb8
+            instance_type: t2.micro
+            assign_public_ip: no
+            vpc_id: vpc-088645e19d58f4554
+            validate_certs: false
+
+        - ec2_asg:
+            name: ansible_scaling_group
+            launch_config_name: ansible_launch_config
+            health_check_period: 60
+            health_check_type: ELB
+            replace_all_instances: no
+            min_size: 1
+            max_size: 10
+            wait_for_instances: false
+            desired_capacity: 2
+            region: us-east-1
+            validate_certs: false
+            target_group_arns:
+                - arn:aws:elasticloadbalancing:us-east-1:002838516900:targetgroup/test-target-group/1a94b599cbd2a264
